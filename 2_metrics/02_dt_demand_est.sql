@@ -1,0 +1,19 @@
+CREATE OR REPLACE DYNAMIC TABLE DT_DEMAND_EST
+TARGET_LAG = '1 hour'
+WAREHOUSE = WH_INVENTORY
+AS
+SELECT
+  location,
+  item,
+  AVG(issued) AS avg_daily_issued,
+  COUNT(*)    AS days_used_for_avg,
+  MAX(stock_date) AS last_stock_date
+FROM RAW_DAILY_STOCK
+GROUP BY location, item;
+
+SHOW DYNAMIC TABLES LIKE 'DT_DEMAND_EST';
+
+ALTER DYNAMIC TABLE DT_DEMAND_EST REFRESH;
+
+
+SELECT * FROM DT_DEMAND_EST;
